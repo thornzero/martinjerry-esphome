@@ -1,0 +1,119 @@
+---
+
+###############################################################################
+# Martin Jerry MJ-ST02 3-Way Switch ESPHome configuration
+###############################################################################
+#
+#    Copyright (C) 2025 Joshua M. Boniface <joshua@boniface.me>
+#
+#    Based on the original (no license provided) by @mjoshd and relicensed in
+#    good faith.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, version 3.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+###############################################################################
+
+esphome:
+  name: martin-jerry-mj-st02
+  name_add_mac_suffix: true
+  friendly_name: Martin Jerry MJ-ST02
+  project:
+    name: "Joshua Boniface.Martin Jerry ST02"
+    version: "1.0"
+  platformio_options:
+    build_flags:
+      - -DNDEBUG
+      - -Os
+
+dashboard_import:
+  package_import_url: github://joshuaboniface/martinjerry-esphome/mj-st02/mj-st02.yaml
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+
+logger:
+  level: WARN
+  baud_rate: 0
+
+api:
+  reboot_timeout: 15min
+
+ota:
+  platform: esphome
+
+web_server:
+  port: 80
+
+captive_portal:
+
+mdns:
+  disabled: false
+
+wifi:
+  ap: {}
+  domain: ""
+  reboot_timeout: 15min
+  power_save_mode: none
+
+preferences:
+  flash_write_interval: 15s
+
+button:
+  - platform: restart
+    name: "ESP8266 Restart"
+    icon: mdi:power-cycle
+    entity_category: diagnostic
+
+  - platform: factory_reset
+    name: "ESP8266 Factory Reset"
+    icon: mdi:restart-alert
+    entity_category: diagnostic
+
+uart:
+  rx_pin: GPIO3
+  tx_pin: GPIO1
+  baud_rate: 9600
+
+tuya:
+
+light:
+  - platform: tuya
+    name: "Light"
+    switch_datapoint: 1
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+    entity_category: diagnostic
+
+  - platform: uptime
+    name: "Uptime"
+    update_interval: 60s
+    entity_category: diagnostic
+
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    entity_category: diagnostic
+
+  - platform: wifi_info
+    ip_address:
+      name: "WiFi IP Address"
+    ssid:
+      name: "WiFi SSID"
+    bssid:
+      name: "WiFi BSSID"
+    mac_address:
+      name: "WiFi MAC Address"
