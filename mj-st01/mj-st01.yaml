@@ -1,0 +1,159 @@
+---
+
+###############################################################################
+# Martin Jerry MJ-ST01 Switch ESPHome configuration
+###############################################################################
+#
+#    Copyright (C) 2025 Joshua M. Boniface <joshua@boniface.me>
+#
+#    Based on the original (no license provided) by @mjoshd and relicensed in
+#    good faith.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, version 3.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+###############################################################################
+
+esphome:
+  name: martin-jerry-mj-st01
+  name_add_mac_suffix: true
+  friendly_name: Martin Jerry MJ-ST01
+  project:
+    name: "Joshua Boniface.Martin Jerry ST01"
+    version: "1.0"
+  platformio_options:
+    build_flags:
+      - -DNDEBUG
+      - -Os
+
+dashboard_import:
+  package_import_url: github://joshuaboniface/martinjerry-esphome/mj-st01/mj-st01.yaml
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+
+logger:
+  level: WARN
+  baud_rate: 0
+
+api:
+  reboot_timeout: 15min
+
+ota:
+  platform: esphome
+
+web_server:
+  port: 80
+
+captive_portal:
+
+mdns:
+  disabled: false
+
+wifi:
+  ap: {}
+  domain: ""
+  reboot_timeout: 15min
+  power_save_mode: none
+
+preferences:
+  flash_write_interval: 15s
+
+button:
+  - platform: restart
+    name: "ESP8266 Restart"
+    icon: mdi:power-cycle
+    entity_category: diagnostic
+
+  - platform: factory_reset
+    name: "ESP8266 Factory Reset"
+    icon: mdi:restart-alert
+    entity_category: diagnostic
+
+binary_sensor:
+  - platform: gpio
+    name: "Main Button"
+    id: main_button
+    pin:
+      number: GPIO13
+      mode: INPUT_PULLUP
+      inverted: true
+    on_press:
+      - if:
+          condition:
+            light.is_on: lightswitch
+          then:
+            - light.turn_off: lightswitch
+          else:
+            - light.turn_on: lightswitch
+
+light:
+  - platform: binary
+    name: "Light"
+    id: lightswitch
+    output: relay
+    restore_mode: RESTORE_DEFAULT_OFF
+    on_turn_on:
+      - light.turn_on: blueled
+      - light.turn_off: redled
+    on_turn_off:
+      - light.turn_off: blueled
+      - light.turn_on: redled
+
+  - platform: status_led
+    name: "Status LED"
+    id: redled
+    restore_mode: RESTORE_DEFAULT_ON
+    pin:
+      number: GPIO04
+      inverted: true
+
+  - platform: status_led
+    name: "Power LED"
+    id: blueled
+    restore_mode: RESTORE_DEFAULT_OFF
+    pin:
+      number: GPIO05
+      inverted: true
+
+output:
+  - platform: gpio
+    id: relay
+    pin:
+      number: GPIO12
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+    entity_category: diagnostic
+
+  - platform: uptime
+    name: "Uptime"
+    update_interval: 60s
+    entity_category: diagnostic
+
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    entity_category: diagnostic
+
+  - platform: wifi_info
+    ip_address:
+      name: "WiFi IP Address"
+    ssid:
+      name: "WiFi SSID"
+    bssid:
+      name: "WiFi BSSID"
+    mac_address:
+      name: "WiFi MAC Address"
