@@ -61,6 +61,7 @@ switch:
       number: GPIO15
       inverted: false
     id: relay1
+    restore_mode: RESTORE_DEFAULT_OFF
     on_turn_on:
       - light.turn_on: relay1_led
     on_turn_off:
@@ -71,6 +72,7 @@ switch:
       number: GPIO32
       inverted: false
     id: relay2
+    restore_mode: RESTORE_DEFAULT_OFF
     on_turn_on:
       - light.turn_on: relay2_led
     on_turn_off:
@@ -83,6 +85,7 @@ output:
     pin: GPIO19
     inverted: True
     id: relay1_led_gpio
+
   - platform: gpio
     pin: GPIO16
     inverted: True
