@@ -18,7 +18,7 @@ esp32:
   board: esp-wrover-kit
 
 dashboard_import:
-  package_import_url: github://joshuaboniface/martinjerry-esphome/wyze-outdoor/wyze-outdoor.yaml
+  package_import_url: github://thornzero/martinjerry-esphome/wyze-outdoor/wyze-outdoor.yaml
 
 preferences:
   flash_write_interval: 15sec
